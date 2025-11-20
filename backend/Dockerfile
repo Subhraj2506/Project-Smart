@@ -1,14 +1,22 @@
-FROM maven:3.9.4-eclipse-temurin-17 AS builder
+# Build frontend
+FROM node:18 AS frontend
+WORKDIR /app/frontend
+COPY frontend/ .
+RUN npm install
+RUN npm run build
 
+# Build backend
+FROM maven:3.9-eclipse-temurin-17 AS backend
+WORKDIR /app/backend
+COPY backend/ .
+COPY --from=frontend /app/frontend/dist ./src/main/resources/static
+RUN mvn -q -DskipTests package
+
+# Run final
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY backend/pom.xml .
-COPY backend/src ./src
-RUN mvn -B -DskipTests package
-
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
-
+COPY --from=backend /app/backend/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
 
