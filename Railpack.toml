@@ -1,1 +1,21 @@
-app_dir = "backend"
+[project]
+# Tell Railpack this is a multi-app repo
+type = "monorepo"
+
+# Define both apps
+apps = ["backend", "frontend"]
+
+# --- Backend configuration ---
+[[apps]]
+name = "backend"
+path = "backend"
+builder = "java-maven"
+start = "java -jar target/*.jar"
+
+# --- Frontend configuration ---
+[[apps]]
+name = "frontend"
+path = "frontend"
+builder = "node"
+start = "npm run dev"
+build = "npm run build"
