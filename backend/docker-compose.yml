@@ -1,18 +1,6 @@
-version: '3.8'
+version: '3'
 services:
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: egov
-      POSTGRES_USER: egovuser
-      POSTGRES_PASSWORD: egovpass
-    ports: ['5432:5432']
-    volumes: ['db_data:/var/lib/postgresql/data']
   backend:
-    build: ./backend
-    environment:
-      DATABASE_URL: postgres://egovuser:egovpass@db:5432/egov
-      JWT_SECRET: somesecretkeylongenough_for_demo_purposes_only
-    ports: ['8080:8080']
-volumes:
-  db_data:
+    build: .
+    ports:
+      - "8080:8080"
